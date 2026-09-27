@@ -5,6 +5,9 @@ import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
 import { AmbientGlow } from "../components/AmbientGlow";
 import { PROBLEM_SOLVING, ENGINEERING_DNA } from "../data/skills";
+import { useLeetCode } from "../hooks/useLeetCode";
+import { DifficultyBreakdown, LeetCodeInsights } from "../components/leetcode/LeetCodeInsights";
+import { timeAgo } from "../lib/leetcode";
 import { SOCIAL_LINKS } from "../data/site";
 import { useCountUp } from "../hooks/useCountUp";
 import { EASE } from "../lib/motion";
@@ -73,28 +76,26 @@ const GLYPHS = [
 const DNA_COLORS = ["#3b82f6", "#8b5cf6", "#f59e0b", "#10b981"];
 
 export function ProblemSolving() {
-  const { ref, value } = useCountUp(PROBLEM_SOLVING.target);
+  const { ref: lcRef, status: lcStatus, data: lcData } = useLeetCode();
+  const { ref: countRef, value: count } = useCountUp(lcData?.totals.all ?? 0);
   const sceneRef = useRef(null);
   const sceneInView = useInView(sceneRef);
 
   return (
-    <section id="problem-solving" className="relative py-16 sm:py-24">
+    <section id="problem-solving" ref={lcRef} className="relative py-16 sm:py-24">
       <AmbientGlow variant="problem" />
       <Container className="flex flex-col gap-10">
         <SectionHeading chapter="problem-solving" title="Sharpening the fundamentals." />
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-          {/* LeetCode stat */}
-          <motion.a
-            ref={ref}
-            href={SOCIAL_LINKS.leetcode}
-            target="_blank"
-            rel="noreferrer"
+          {/* LeetCode stat — live data from /api/leetcode (Netlify Function) */}
+          <motion.div
+            ref={countRef}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: EASE }}
-            className="card-lift card-glow group relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-[28px] border border-[var(--color-border)] bg-white px-6 py-16 text-center"
+            className="card-glow group relative flex min-h-[420px] flex-col items-center justify-center overflow-hidden rounded-[28px] border border-[var(--color-border)] bg-white px-6 py-14 text-center"
           >
             <div className="grid-fade pointer-events-none absolute inset-0 opacity-80" style={{ maskImage: "radial-gradient(ellipse 70% 70% at 50% 50%, #000 20%, transparent 75%)" }} aria-hidden="true" />
             <div ref={sceneRef} className={`pointer-events-none absolute inset-0 ${sceneInView ? "" : "algo-paused"}`} aria-hidden="true">
@@ -106,19 +107,49 @@ export function ProblemSolving() {
             ))}
             </div>
 
-            <span className="relative flex items-baseline">
-              <span className="text-gradient-brand text-7xl font-extrabold tabular-nums tracking-[-0.04em] sm:text-8xl">{value}</span>
-              <span className="text-gradient-brand text-5xl font-extrabold sm:text-6xl">{PROBLEM_SOLVING.suffix}</span>
-            </span>
-            <span className="relative mt-2 flex items-center gap-2 text-base font-semibold text-[var(--color-text)]">
-              <Code2 className="h-4 w-4 text-[var(--color-indigo-ink)]" aria-hidden="true" />
-              {PROBLEM_SOLVING.label}
-            </span>
-            <span className="relative mt-5 inline-flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50/70 px-3.5 py-1.5 text-sm font-semibold text-[var(--color-indigo-ink)] transition-colors group-hover:bg-indigo-100/70">
+            {lcData ? (
+              <>
+                <span className="relative flex items-baseline" aria-label={`${lcData.totals.all} ${PROBLEM_SOLVING.label}`}>
+                  <span className="text-gradient-brand text-7xl font-extrabold tabular-nums tracking-[-0.04em] sm:text-8xl">{count}</span>
+                </span>
+                <span className="relative mt-2 flex items-center gap-2 text-base font-semibold text-[var(--color-text)]">
+                  <Code2 className="h-4 w-4 text-[var(--color-indigo-ink)]" aria-hidden="true" />
+                  {PROBLEM_SOLVING.label}
+                </span>
+                <DifficultyBreakdown totals={lcData.totals} />
+                <span className="relative mt-4 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--color-text-faint)]" aria-live="polite">
+                  <span className={`h-1.5 w-1.5 rounded-full ${lcStatus === "live" ? "bg-emerald-500 shadow-[0_0_6px_#10b981]" : "bg-amber-400"}`} aria-hidden="true" />
+                  {lcStatus === "live" ? `Live from LeetCode · updated ${timeAgo(lcData.fetchedAt)}` : lcStatus === "stale" ? `Live data unavailable · last known ${timeAgo(lcData.fetchedAt)}` : "Refreshing from LeetCode…"}
+                </span>
+              </>
+            ) : lcStatus === "error" ? (
+              <div className="relative flex flex-col items-center gap-2" role="status">
+                <Code2 className="h-6 w-6 text-[var(--color-text-faint)]" aria-hidden="true" />
+                <p className="text-base font-semibold text-[var(--color-text)]">LeetCode stats temporarily unavailable</p>
+                <p className="max-w-xs text-sm text-[var(--color-text-muted)]">Live data couldn't be loaded right now — the profile itself is always up to date.</p>
+              </div>
+            ) : (
+              <div className="relative flex w-full flex-col items-center" role="status" aria-label="Loading LeetCode stats">
+                <span className="h-[84px] w-40 animate-pulse rounded-2xl bg-[var(--color-surface-2)] sm:h-24" />
+                <span className="mt-3 h-5 w-48 animate-pulse rounded-md bg-[var(--color-surface-2)]" />
+                <span className="mt-7 grid w-full max-w-sm grid-cols-3 gap-2">
+                  {[0, 1, 2].map((i) => (
+                    <span key={i} className="h-[62px] animate-pulse rounded-xl bg-[var(--color-surface-2)]" />
+                  ))}
+                </span>
+              </div>
+            )}
+
+            <a
+              href={SOCIAL_LINKS.leetcode}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative mt-5 inline-flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50/70 px-3.5 py-1.5 text-sm font-semibold text-[var(--color-indigo-ink)] transition-colors hover:bg-indigo-100/70"
+            >
               View LeetCode profile
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
-            </span>
-          </motion.a>
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </motion.div>
 
           {/* Engineering DNA */}
           <motion.div
@@ -155,6 +186,20 @@ export function ProblemSolving() {
             </div>
           </motion.div>
         </div>
+        {/* Live problem insights */}
+        {lcData ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70 p-5 sm:p-7"
+          >
+            <LeetCodeInsights data={lcData} />
+          </motion.div>
+        ) : lcStatus === "loading" ? (
+          <div className="h-[360px] animate-pulse rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70" role="status" aria-label="Loading problem insights" />
+        ) : null}
       </Container>
     </section>
   );

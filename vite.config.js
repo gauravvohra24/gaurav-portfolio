@@ -33,11 +33,40 @@ function siteMeta(siteUrl) {
   }
 }
 
+// Serves the Netlify Function at /api/leetcode during `vite dev` and `vite preview`,
+// so the live LeetCode section works locally exactly as it does on Netlify.
+function netlifyFunctionsLocally() {
+  const handle = async (req, res, next) => {
+    if (!req.url?.startsWith('/api/leetcode')) return next()
+    try {
+      const mod = await import(new URL('./netlify/functions/leetcode.mjs', import.meta.url).href)
+      const response = await mod.default(new Request(`http://localhost${req.url}`))
+      res.statusCode = response.status
+      response.headers.forEach((value, key) => res.setHeader(key, value))
+      res.end(await response.text())
+    } catch {
+      res.statusCode = 502
+      res.setHeader('Content-Type', 'application/json')
+      res.end('{"error":"LeetCode data temporarily unavailable"}')
+    }
+  }
+  return {
+    name: 'netlify-functions-locally',
+    // Block bodies on purpose: a returned value would be treated as a post-hook by Vite.
+    configureServer(server) {
+      server.middlewares.use(handle)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(handle)
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_SITE_URL')
   const siteUrl = (env.VITE_SITE_URL || '').trim().replace(/\/+$/, '')
   return {
-    plugins: [react(), siteMeta(siteUrl)],
+    plugins: [react(), siteMeta(siteUrl), netlifyFunctionsLocally()],
   }
 })

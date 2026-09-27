@@ -60,10 +60,9 @@ export const SKILL_GROUPS = [
   },
 ];
 
+// LeetCode numbers are live — see netlify/functions/leetcode.mjs. Nothing is hardcoded here.
 export const PROBLEM_SOLVING = {
-  target: 215,
-  suffix: "+",
-  label: "LeetCode Problems",
+  label: "LeetCode Problems Solved",
 };
 
 // Compact "Engineering DNA" — each line traces back to the VVDN / Gemini AI Fitness Log work.
