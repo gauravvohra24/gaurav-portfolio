@@ -42,7 +42,7 @@ export function Architecture() {
         </div>
 
         <div className="card-glow rounded-[28px] border border-[var(--color-border)] bg-white p-4 sm:p-6 lg:p-8">
-          <Deferred minHeight={480}>
+          <Deferred className="min-h-[600px] sm:min-h-[530px] md:min-h-[610px] lg:min-h-[760px] xl:min-h-[840px]">
             <ArchitectureDiagram />
           </Deferred>
         </div>

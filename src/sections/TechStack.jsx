@@ -20,7 +20,7 @@ export function TechStack() {
           description="Grouped by where each tool sits in the architecture — no proficiency bars."
         />
 
-        <Deferred minHeight={380}>
+        <Deferred className="min-h-[490px] sm:min-h-[585px] lg:min-h-[360px]">
           <TechOrbit />
         </Deferred>
 

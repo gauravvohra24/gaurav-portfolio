@@ -199,12 +199,12 @@ export function ProblemSolving() {
             transition={{ duration: 0.6, ease: EASE }}
             className="rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70 p-5 sm:p-7"
           >
-            <Deferred minHeight={360}>
+            <Deferred className="min-h-[940px] sm:min-h-[860px] lg:min-h-[490px]">
               <LeetCodeInsights data={lcData} />
             </Deferred>
           </motion.div>
         ) : lcStatus === "loading" ? (
-          <div className="h-[360px] animate-pulse rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70" role="status" aria-label="Loading problem insights" />
+          <div className="h-[940px] animate-pulse rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70 sm:h-[860px] lg:h-[490px]" role="status" aria-label="Loading problem insights" />
         ) : null}
       </Container>
     </section>

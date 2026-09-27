@@ -10,7 +10,6 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-// Fetch the deferred section chunks once the page has painted, so they're ready before the visitor scrolls.
-const preload = () => setTimeout(preloadDeferredChunks, 200)
-if (document.readyState === 'complete') preload()
-else window.addEventListener('load', preload, { once: true })
+// Start fetching the deferred section chunks immediately, in parallel with the page's own
+// assets, so they mount (almost always before first scroll) instead of shifting content later.
+setTimeout(preloadDeferredChunks, 0)

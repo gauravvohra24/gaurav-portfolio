@@ -155,7 +155,7 @@ export function CurrentRole() {
           )}
         </AnimatePresence>
 
-        <Deferred minHeight={900}>
+        <Deferred className="min-h-[3800px] sm:min-h-[2900px] md:min-h-[2150px] lg:min-h-[1560px]">
           <Contributions />
         </Deferred>
       </div>

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { scrollToHash } from "./lib/scrollToHash";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { IntroSequence } from "./components/IntroSequence";
@@ -18,6 +19,27 @@ import { Contact } from "./sections/Contact";
 
 export default function App() {
   const [introDone, setIntroDone] = useState(false);
+
+  // Same-page anchor links: scroll with the settle-and-correct helper so a long
+  // jump still lands on its section. The skip link keeps native behaviour (focus).
+  useEffect(() => {
+    const onClick = (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest?.('a[href^="#"]');
+      const hash = a?.getAttribute("href");
+      if (!hash || hash === "#" || hash === "#main" || !document.getElementById(hash.slice(1))) return;
+      e.preventDefault();
+      scrollToHash(hash);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
+  // Opened via a shared link like …/#contact: re-run the jump once the page is ready.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash !== "#main" && document.getElementById(hash.slice(1))) scrollToHash(hash, { delay: 150 });
+  }, []);
 
   return (
     <>

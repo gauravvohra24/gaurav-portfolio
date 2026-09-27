@@ -133,7 +133,7 @@ export function FeaturedProject() {
 
             {/* Live architecture side */}
             <div className="relative border-t border-[var(--color-border-soft)] bg-[var(--color-surface-2)]/60 p-5 sm:p-8 lg:border-l lg:border-t-0">
-              <Deferred minHeight={640}>
+              <Deferred className="min-h-[720px] sm:min-h-[650px]">
                 <SystemTrace />
               </Deferred>
             </div>

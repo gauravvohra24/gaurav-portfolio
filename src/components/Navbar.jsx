@@ -4,6 +4,7 @@ import { Menu, X, FileDown } from "lucide-react";
 import { GithubIcon } from "./icons/BrandIcons";
 import { CHAPTERS, NAV_LINKS, PERSONAL, RESUME_PATH, SOCIAL_LINKS } from "../data/site";
 import { useActiveSection } from "../hooks/useActiveSection";
+import { scrollToHash } from "../lib/scrollToHash";
 
 const SECTION_IDS = NAV_LINKS.map((link) => link.href.replace("#", ""));
 const CHAPTER_IDS = CHAPTERS.map((c) => c.id);
@@ -155,12 +156,8 @@ export function Navbar() {
                       // Close first, then scroll ourselves: the collapsing menu cancels the native hash jump on mobile.
                       e.preventDefault();
                       setMenuOpen(false);
-                      const target = document.getElementById(link.href.slice(1));
                       // Wait for the menu's 250ms collapse to finish — scrolling during it gets cancelled.
-                      window.setTimeout(() => {
-                        target?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-                        history.replaceState(null, "", link.href);
-                      }, 280);
+                      scrollToHash(link.href, { delay: 280 });
                     }}
                     className="rounded-lg px-3 py-3 text-base text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-accent-soft)] hover:text-[var(--color-text)]"
                   >
