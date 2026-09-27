@@ -1,0 +1,508 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Premium light base */
+  --color-ink: #ffffff;
+  --color-ink-deep: #f5f7fb;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8fafc;
+  --color-border: #e6e9f0;
+  --color-border-soft: #eef1f6;
+  --color-text: #111827;
+  --color-text-secondary: #1f2937;
+  --color-text-muted: #64748b;
+  --color-text-faint: #94a3b8;
+
+  /* Sophisticated accent system — used as bright gradient stops on white cards */
+  --color-indigo: #6366f1;
+  --color-violet: #8b5cf6;
+  --color-blue: #3b82f6;
+  --color-cyan: #06b6d4;
+  --color-emerald: #10b981;
+  --color-amber: #f59e0b;
+  --color-pink: #ec4899;
+
+  /* Slightly deeper shades for small text/icons so they hold contrast on white */
+  --color-indigo-ink: #4f46e5;
+  --color-violet-ink: #7c3aed;
+  --color-blue-ink: #2563eb;
+  --color-cyan-ink: #0891b2;
+  --color-emerald-ink: #059669;
+  --color-amber-ink: #d97706;
+  --color-pink-ink: #db2777;
+
+  --color-accent: #4f46e5;
+  --color-accent-soft: #6366f114;
+  --color-accent-strong: #4338ca;
+
+  --breakpoint-xs: 22.5rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Keep section headings clear of the floating navbar after anchor jumps on small screens. */
+  @media (max-width: 639px) {
+    main section[id] {
+      scroll-margin-top: 28px;
+    }
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+    border: 2px solid var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-faint);
+  }
+
+  html {
+    scrollbar-color: var(--color-border) var(--color-ink);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-gradient-brand {
+    background-image: linear-gradient(100deg, #4f46e5 0%, #7c3aed 45%, #0891b2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .grid-fade {
+    background-image:
+      linear-gradient(to right, var(--color-border-soft) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-border-soft) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, #000 10%, transparent 70%);
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, #000 10%, transparent 70%);
+  }
+
+  .dot-pulse::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.6;
+    animation: dot-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .card-glow {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 24px 60px -30px rgba(15, 23, 42, 0.18);
+  }
+
+  .card-lift {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.35s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 32px 70px -28px rgba(79, 70, 229, 0.22);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+  }
+
+  .gradient-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(120deg, rgba(79, 70, 229, 0.55), rgba(124, 58, 237, 0.4), rgba(8, 145, 178, 0.5));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .glow-btn {
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.4) inset, 0 10px 30px -8px rgba(79, 70, 229, 0.45);
+  }
+  .glow-btn:hover {
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset, 0 14px 38px -6px rgba(124, 58, 237, 0.5);
+  }
+
+  .pointer-glow {
+    position: relative;
+  }
+  .pointer-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(260px circle at var(--px, 50%) var(--py, 50%), var(--glow, rgba(79, 70, 229, 0.08)), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .pointer-glow:hover::after {
+    opacity: 1;
+  }
+
+}
+
+@keyframes dot-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  75%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.flow-line {
+  stroke-dasharray: 4 6;
+  animation: flow-dash 1.4s linear infinite;
+}
+
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-spin-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+
+
+/* ---------- Living background ---------- */
+@property --bg-a {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: rgba(124, 58, 237, 0.07);
+}
+@property --bg-b {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: rgba(79, 70, 229, 0.05);
+}
+.bg-wash {
+  background-image:
+    radial-gradient(ellipse 70% 60% at 85% 0%, var(--bg-a), transparent 70%),
+    radial-gradient(ellipse 60% 60% at 0% 100%, var(--bg-b), transparent 70%);
+  transition: --bg-a 1.2s ease, --bg-b 1.2s ease;
+}
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 20%, transparent 80%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 20%, transparent 80%);
+}
+
+/* ---------- Card depth (Tilt) ---------- */
+.tilt {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease;
+  will-change: transform;
+}
+.tilt:hover,
+.tilt:focus-within,
+.tilt[data-active="true"] {
+  --lift: -3px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 26px 60px -30px rgba(79, 70, 229, 0.28);
+}
+
+/* ---------- Cursor (desktop only; rendered only for fine pointers) ---------- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+:root[data-cursor-visible="true"] .cursor-dot,
+:root[data-cursor-visible="true"] .cursor-ring {
+  opacity: 1;
+}
+.cursor-dot span,
+.cursor-ring span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+.cursor-dot span {
+  width: 6px;
+  height: 6px;
+  background: rgba(79, 70, 229, 0.85);
+}
+.cursor-ring span {
+  width: 0;
+  height: 0;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  background: rgba(99, 102, 241, 0.06);
+  opacity: 0;
+}
+.cursor-ring[data-mode="link"] span {
+  width: 34px;
+  height: 34px;
+  opacity: 1;
+}
+.cursor-dot[data-mode="link"] span {
+  width: 4px;
+  height: 4px;
+}
+.cursor-ring[data-mode="ring"] span {
+  width: 46px;
+  height: 46px;
+  opacity: 1;
+  background: transparent;
+  border: 1.5px solid rgba(99, 102, 241, 0.55);
+}
+.cursor-dot[data-mode="text"] span,
+.cursor-ring[data-mode="text"] span {
+  opacity: 0;
+}
+
+/* Moving indigo → violet → cyan hairline (contact card, case-study header). */
+.animated-gradient-bar {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4, #8b5cf6, #6366f1);
+  background-size: 200% 100%;
+  animation: gradient-slide 6s linear infinite;
+}
+@keyframes gradient-slide {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* "How it works" mini-diagrams: a packet running down a short wire. */
+.dd-packet {
+  animation: dd-packet 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes dd-packet {
+  0% {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(18px);
+    opacity: 0;
+  }
+}
+.dd-beat {
+  animation: dd-beat 2.1s ease-in-out infinite;
+}
+@keyframes dd-beat {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scaleX(0.4);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+@media (min-width: 768px) {
+  .dd-paused .dd-packet,
+  .dd-paused .dd-beat {
+    animation-play-state: paused;
+  }
+}
+
+/* Very slow drift for decorative glyphs. */
+.float-y {
+  animation: float-y 7s ease-in-out infinite;
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .flow-line {
+    animation: none;
+  }
+
+  .tilt {
+    transform: none !important;
+  }
+}
+
+/* Experience timeline: a small signal travels down the rail now and then. */
+.timeline-signal {
+  animation: timeline-signal 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation-delay: 1.6s;
+  opacity: 0;
+}
+@keyframes timeline-signal {
+  0% {
+    top: 2rem;
+    opacity: 0;
+  }
+  8%,
+  40% {
+    opacity: 1;
+  }
+  48%,
+  100% {
+    top: calc(100% - 1.75rem);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-signal {
+    display: none;
+  }
+}
+
+/* LeetCode card: tiny algorithm vignettes on a shared 6s cycle. */
+.algo-slide {
+  animation: algo-slide 6s steps(1, end) infinite;
+}
+@keyframes algo-slide {
+  0% { transform: translateX(0); }
+  16% { transform: translateX(18px); }
+  33% { transform: translateX(36px); }
+  50% { transform: translateX(54px); }
+  66% { transform: translateX(72px); }
+  83%, 100% { transform: translateX(0); }
+}
+.algo-node {
+  animation: algo-node 6s ease-in-out infinite;
+}
+@keyframes algo-node {
+  0%, 8% { fill: #fff; }
+  14%, 70% { fill: var(--algo, #6366f1); }
+  85%, 100% { fill: #fff; }
+}
+.algo-edge {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: algo-edge 6s ease-in-out infinite;
+}
+@keyframes algo-edge {
+  0%, 6% { stroke-dashoffset: 1; }
+  16%, 70% { stroke-dashoffset: 0; }
+  85%, 100% { stroke-dashoffset: 1; opacity: 0.2; }
+}
+.algo-paused *,
+.algo-paused {
+  animation-play-state: paused !important;
+}
+
+.terminal-caret {
+  animation: caret-blink 1.1s steps(1, end) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
