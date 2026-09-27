@@ -5,7 +5,7 @@ import { Tilt } from "../Tilt";
 import { FlowChain } from "./FlowChain";
 import { useFinePointer } from "../../hooks/useFinePointer";
 import { usePrefersReducedMotion } from "../../hooks/usePrefersReducedMotion";
-import { EASE, DURATION } from "../../lib/motion";
+import { EASE, DURATION, REVEAL } from "../../lib/motion";
 import { PLATFORM_ROLES, MAJOR_ROLE_COUNT, IAM_CAPABILITIES, PRIMARY_SERVICES, SERVICE_TECH, DELIVERY_STAGES } from "../../data/currentRole";
 
 const Label = ({ children }) => <p className="font-mono text-[9.5px] font-bold uppercase tracking-[0.18em] text-[var(--color-text-faint)]">{children}</p>;
@@ -15,7 +15,7 @@ function CardShell({ index, title, icon: Icon, color, bg, active, onActivate, on
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={REVEAL}
       transition={{ duration: DURATION.section, delay: (index % 3) * 0.06, ease: EASE }}
       className={className}
     >
@@ -76,7 +76,7 @@ function IamBody({ active }) {
               setShowAll((v) => !v);
             }}
             aria-expanded={showAll}
-            className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--color-violet-ink)] hover:underline"
+            className="-my-2 inline-flex min-h-9 items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--color-violet-ink)] hover:underline"
           >
             {showAll ? "Show fewer" : `View roles (+${PLATFORM_ROLES.length - MAJOR_ROLE_COUNT})`}
             <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${showAll ? "rotate-180" : ""}`} aria-hidden="true" />
@@ -265,7 +265,7 @@ function Terminal({ play }) {
 }
 function DeployBody({ active }) {
   const ref = useRef(null);
-  const seen = useInView(ref, { once: true, amount: 0.5 });
+  const seen = useInView(ref, { once: true, margin: "40000px 0px -20% 0px" });
   return (
     <div ref={ref} className="grid h-full grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr]">
       <div className="flex flex-col gap-4">

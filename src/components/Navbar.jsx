@@ -52,7 +52,7 @@ export function Navbar() {
         >
           <a
             href="#top"
-            className="font-mono text-sm font-semibold tracking-[0.15em] text-[var(--color-text)]"
+            className="inline-flex min-h-11 items-center font-mono text-sm font-semibold tracking-[0.15em] text-[var(--color-text)]"
             aria-label={`${PERSONAL.name} — home`}
           >
             GAURAV<span className="text-gradient-brand">.</span>

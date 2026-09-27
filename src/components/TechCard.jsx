@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Server, Network, ShieldCheck, Waypoints, Sparkles, Database, Wrench, LayoutPanelLeft } from "lucide-react";
 import { Tilt } from "./Tilt";
-import { EASE, DURATION } from "../lib/motion";
+import { EASE, DURATION, REVEAL } from "../lib/motion";
 
 const ICONS = { Server, Network, ShieldCheck, Waypoints, Sparkles, Database, Wrench, LayoutPanelLeft };
 
@@ -25,7 +25,7 @@ export function TechCard({ group, index }) {
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
+      viewport={REVEAL}
       transition={{ duration: DURATION.section, delay: (index % 4) * 0.06, ease: EASE }}
     >
       <Tilt

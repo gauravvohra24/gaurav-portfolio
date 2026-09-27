@@ -43,7 +43,7 @@ function Field({ id, name, label, type = "text", value, onChange, onBlur, error,
         required
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={`peer w-full rounded-xl border bg-white px-4 pb-2.5 pt-6 text-sm text-[var(--color-text)] outline-none transition-[border-color,box-shadow,transform] duration-200 ease-out focus:-translate-y-px disabled:opacity-70 ${
+        className={`peer w-full rounded-xl border bg-white px-4 pb-2.5 pt-6 text-base text-[var(--color-text)] sm:text-sm outline-none transition-[border-color,box-shadow,transform] duration-200 ease-out focus:-translate-y-px disabled:opacity-70 ${
           multiline ? "resize-none" : ""
         } ${
           error
@@ -53,7 +53,7 @@ function Field({ id, name, label, type = "text", value, onChange, onBlur, error,
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-4 top-4 origin-left text-sm text-[var(--color-text-faint)] transition-all duration-200 ease-out peer-focus:top-2 peer-focus:scale-[0.78] peer-focus:font-medium peer-focus:text-[var(--color-indigo-ink)] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-[0.78] peer-[:not(:placeholder-shown)]:font-medium"
+        className="pointer-events-none absolute left-4 top-4 origin-left text-base text-[var(--color-text-faint)] sm:text-sm transition-all duration-200 ease-out peer-focus:top-2 peer-focus:scale-[0.78] peer-focus:font-medium peer-focus:text-[var(--color-indigo-ink)] peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-[0.78] peer-[:not(:placeholder-shown)]:font-medium"
       >
         {label}
       </label>

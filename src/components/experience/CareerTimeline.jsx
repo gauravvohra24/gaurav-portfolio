@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { CAREER_ARC } from "../../data/currentRole";
-import { EASE } from "../../lib/motion";
+import { EASE, REVEAL } from "../../lib/motion";
 
 const MILESTONES = [
   { when: "Dec 2025", title: "Spring Boot Training", org: "VVDN Technologies", detail: "Microservices foundation · Gemini AI Fitness Log" },
@@ -22,7 +22,7 @@ export function CareerTimeline() {
           className="absolute left-[16%] right-[16%] top-[22px] hidden h-px origin-left bg-[linear-gradient(90deg,#c7d2fe,#8b5cf6,#06b6d4)] md:block"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
+          viewport={REVEAL}
           transition={{ duration: 1.1, delay: 0.3, ease: EASE }}
         />
         {MILESTONES.map((m, i) => (
@@ -30,7 +30,7 @@ export function CareerTimeline() {
             key={m.when}
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={REVEAL}
             transition={{ duration: 0.5, delay: 0.15 + i * 0.15, ease: EASE }}
             className="relative flex gap-3 md:flex-col md:items-center md:text-center"
           >
@@ -59,7 +59,7 @@ export function CareerTimeline() {
       <motion.ol
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-40px" }}
+        viewport={REVEAL}
         variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07, delayChildren: 0.5 } } }}
         className="flex flex-wrap items-center gap-x-1 gap-y-2"
         aria-label="Career arc"

@@ -1,9 +1,12 @@
 import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
 import { TechCard } from "../components/TechCard";
-import { TechOrbit } from "../components/TechOrbit";
+import { lazyNamed } from "../lib/lazy";
+import { Deferred } from "../components/Deferred";
 import { AmbientGlow } from "../components/AmbientGlow";
 import { SKILL_GROUPS } from "../data/skills";
+
+const TechOrbit = lazyNamed(() => import("../components/TechOrbit"), "TechOrbit");
 
 export function TechStack() {
   return (
@@ -17,7 +20,9 @@ export function TechStack() {
           description="Grouped by where each tool sits in the architecture — no proficiency bars."
         />
 
-        <TechOrbit />
+        <Deferred minHeight={380}>
+          <TechOrbit />
+        </Deferred>
 
         <div className="grid grid-cols-1 gap-3 xs:grid-cols-2 lg:grid-cols-4">
           {SKILL_GROUPS.map((group, i) => (

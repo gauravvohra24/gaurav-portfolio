@@ -5,7 +5,7 @@ import { Container } from "../components/Container";
 import { ContactForm } from "../components/ContactForm";
 import { MagneticWrap } from "../components/MagneticWrap";
 import { AmbientGlow } from "../components/AmbientGlow";
-import { EASE } from "../lib/motion";
+import { EASE, REVEAL } from "../lib/motion";
 import { SOCIAL_LINKS, PERSONAL, RESUME_PATH, chapter } from "../data/site";
 
 const LINKS = [
@@ -37,7 +37,7 @@ export function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 36, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={REVEAL}
           transition={{ duration: 0.8, ease: EASE }}
           className="card-glow relative overflow-hidden rounded-[32px] border border-[var(--color-border)] bg-white"
         >
@@ -45,7 +45,7 @@ export function Contact() {
           <motion.div
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
+            viewport={REVEAL}
             transition={{ duration: 1.1, delay: 0.2, ease: EASE }}
             className="animated-gradient-bar absolute inset-x-0 top-0 h-[3px] origin-left"
           />
@@ -55,7 +55,7 @@ export function Contact() {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
+            viewport={REVEAL}
             className="relative grid grid-cols-1 gap-10 p-6 sm:p-12 lg:grid-cols-[1fr_1fr] lg:gap-14"
           >
             <div className="flex flex-col gap-6">

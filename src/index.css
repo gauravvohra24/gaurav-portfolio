@@ -61,6 +61,15 @@
     overflow-x: hidden;
   }
 
+  /* Phones: nothing smaller than 10px — the tiny mono labels stay legible. */
+  @media (max-width: 639px) {
+    .text-\[8px\],
+    .text-\[9px\],
+    .text-\[9\.5px\] {
+      font-size: 10px;
+    }
+  }
+
   /* Keep section headings clear of the floating navbar after anchor jumps on small screens. */
   @media (max-width: 639px) {
     main section[id] {

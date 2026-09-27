@@ -17,6 +17,16 @@ export const SPRING = {
 
 
 /**
+ * Viewport rule for every "reveal once" animation.
+ * - amount 0: never depends on element height (a 5000px-tall card on a phone
+ *   can't have 15% of itself on screen at once, so it would never appear).
+ * - huge top margin: anything ABOVE the screen counts as seen, however far a
+ *   fast fling or anchor jump skipped — content you've passed is never left invisible.
+ * - bottom -6%: entrance still plays as content scrolls in, not before.
+ */
+export const REVEAL = { once: true, amount: 0, margin: "40000px 0px -6% 0px" };
+
+/**
  * Turns a polyline into framer-motion keyframes for an SVG packet, with
  * timing proportional to segment length so the packet moves at a constant speed.
  */

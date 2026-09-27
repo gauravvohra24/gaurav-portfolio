@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { EASE } from "../lib/motion";
+import { EASE, REVEAL } from "../lib/motion";
 
 const STEP_COLORS = ["#64748b", "#3b82f6", "#f59e0b", "#3b82f6", "#10b981", "#8b5cf6"];
 
@@ -13,7 +13,7 @@ export function EventFlowDiagram({ steps }) {
     <motion.ol
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={REVEAL}
       variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
       className="relative flex flex-col gap-2.5 pl-8"
     >

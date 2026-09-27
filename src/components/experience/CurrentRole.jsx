@@ -2,11 +2,14 @@ import { useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { ArrowRight, MapPin, CalendarDays, Building2 } from "lucide-react";
 import { RealSystemFlow } from "./RealSystemFlow";
-import { Contributions } from "./Contributions";
-import { ExploreWork } from "./ExploreWork";
+import { lazyNamed } from "../../lib/lazy";
+import { Deferred } from "../Deferred";
 import { MagneticWrap } from "../MagneticWrap";
 import { CURRENT_ROLE } from "../../data/currentRole";
 import { EASE } from "../../lib/motion";
+
+const Contributions = lazyNamed(() => import("./Contributions"), "Contributions");
+const ExploreWork = lazyNamed(() => import("./ExploreWork"), "ExploreWork");
 
 const reveal = {
   hidden: { opacity: 0, y: 14 },
@@ -18,7 +21,7 @@ const PIPELINE_DELAY = 1.85;
 
 export function CurrentRole() {
   const ref = useRef(null);
-  const show = useInView(ref, { once: true, amount: 0.15 });
+  const show = useInView(ref, { once: true, margin: "40000px 0px -15% 0px" });
   const [exploring, setExploring] = useState(false);
   const r = CURRENT_ROLE;
 
@@ -145,12 +148,16 @@ export function CurrentRole() {
         <AnimatePresence initial={false}>
           {exploring && (
             <motion.div id="explore-work" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.45, ease: EASE }} className="overflow-hidden">
-              <ExploreWork />
+              <Deferred minHeight={220}>
+                <ExploreWork />
+              </Deferred>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <Contributions />
+        <Deferred minHeight={900}>
+          <Contributions />
+        </Deferred>
       </div>
     </motion.article>
   );

@@ -53,10 +53,10 @@ export function IntroSequence({ onDone }) {
       // storage unavailable (private mode / blocked site data) — the intro just plays again next time
     }
     const timers = [
-      setTimeout(() => setPhase("network"), 300),
-      setTimeout(() => setPhase("labels"), 800),
-      setTimeout(() => setPhase("exit"), 1300),
-      setTimeout(() => onDone(), 1900),
+      setTimeout(() => setPhase("network"), 150),
+      setTimeout(() => setPhase("labels"), 450),
+      setTimeout(() => setPhase("exit"), 750),
+      setTimeout(() => onDone(), 1100),
     ];
     return () => timers.forEach(clearTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps

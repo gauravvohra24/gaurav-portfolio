@@ -9,7 +9,7 @@ import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
  */
 export function useCountUp(target, { duration = 1400 } = {}) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const inView = useInView(ref, { once: true, margin: "40000px 0px -6% 0px" });
   const reduced = usePrefersReducedMotion();
   const [value, setValue] = useState(0);
 

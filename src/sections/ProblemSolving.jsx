@@ -6,11 +6,15 @@ import { SectionHeading } from "../components/SectionHeading";
 import { AmbientGlow } from "../components/AmbientGlow";
 import { PROBLEM_SOLVING, ENGINEERING_DNA } from "../data/skills";
 import { useLeetCode } from "../hooks/useLeetCode";
-import { DifficultyBreakdown, LeetCodeInsights } from "../components/leetcode/LeetCodeInsights";
+import { DifficultyBreakdown } from "../components/leetcode/DifficultyBreakdown";
+import { lazyNamed } from "../lib/lazy";
+import { Deferred } from "../components/Deferred";
 import { timeAgo } from "../lib/leetcode";
 import { SOCIAL_LINKS } from "../data/site";
 import { useCountUp } from "../hooks/useCountUp";
-import { EASE } from "../lib/motion";
+import { EASE, REVEAL } from "../lib/motion";
+
+const LeetCodeInsights = lazyNamed(() => import("../components/leetcode/LeetCodeInsights"), "LeetCodeInsights");
 
 // Decorative algorithm vignettes — they animate concepts, not claims.
 // Each runs on a shared 6s cycle; staggered delays make the "algorithm" step through.
@@ -93,7 +97,7 @@ export function ProblemSolving() {
             ref={countRef}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={REVEAL}
             transition={{ duration: 0.6, ease: EASE }}
             className="card-glow group relative flex min-h-[420px] flex-col items-center justify-center overflow-hidden rounded-[28px] border border-[var(--color-border)] bg-white px-6 py-14 text-center"
           >
@@ -155,7 +159,7 @@ export function ProblemSolving() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={REVEAL}
             transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
             className="flex flex-col gap-4 rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70 p-5 sm:p-6"
           >
@@ -169,7 +173,7 @@ export function ProblemSolving() {
                   key={item.title}
                   initial={{ opacity: 0, scale: 0.97 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
+                  viewport={REVEAL}
                   transition={{ duration: 0.45, delay: 0.15 + i * 0.07, ease: EASE }}
                   className="card-lift group flex flex-col gap-2 rounded-2xl border border-[var(--color-border)] bg-white p-4"
                 >
@@ -191,11 +195,13 @@ export function ProblemSolving() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
+            viewport={REVEAL}
             transition={{ duration: 0.6, ease: EASE }}
             className="rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70 p-5 sm:p-7"
           >
-            <LeetCodeInsights data={lcData} />
+            <Deferred minHeight={360}>
+              <LeetCodeInsights data={lcData} />
+            </Deferred>
           </motion.div>
         ) : lcStatus === "loading" ? (
           <div className="h-[360px] animate-pulse rounded-[28px] border border-[var(--color-border)] bg-[var(--color-surface-2)]/70" role="status" aria-label="Loading problem insights" />

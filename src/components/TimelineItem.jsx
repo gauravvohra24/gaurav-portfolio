@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Braces, Check, ChevronDown, MessageSquareText, Network, ShieldCheck } from "lucide-react";
 import { TechBadge } from "./TechBadge";
 import { CATEGORY_COLORS } from "../data/categoryColors";
-import { EASE, DURATION } from "../lib/motion";
+import { EASE, DURATION, REVEAL } from "../lib/motion";
 
 const HIGHLIGHT_ICONS = { microservices: Network, security: ShieldCheck, messaging: MessageSquareText, api: Braces };
 
@@ -31,7 +31,7 @@ export function TimelineItem({ entry }) {
       layout
       initial={{ opacity: 0, y: 22 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={REVEAL}
       transition={{ duration: DURATION.section, ease: EASE, layout: { duration: 0.45, ease: EASE } }}
       className="card-glow relative overflow-hidden rounded-[24px] border border-[var(--color-border)] bg-white"
     >
@@ -45,7 +45,7 @@ export function TimelineItem({ entry }) {
             className="absolute bottom-7 left-5 top-8 w-px origin-top bg-[linear-gradient(180deg,#6366f1,#8b5cf6,#06b6d4)]"
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
+            viewport={REVEAL}
             transition={{ duration: 1.2, delay: 0.2, ease: EASE }}
           />
           <span className="absolute left-5 top-8 -ml-[5px] h-[11px] w-[11px] rounded-full border-2 border-[var(--color-indigo)] bg-white shadow-[0_0_0_4px_rgba(99,102,241,0.12)]" aria-hidden="true" />
@@ -63,7 +63,7 @@ export function TimelineItem({ entry }) {
               className="h-[2px] flex-1 origin-left rounded-full bg-[linear-gradient(90deg,#6366f1,#8b5cf6,#06b6d4)]"
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }}
+              viewport={REVEAL}
               transition={{ duration: 1.1, delay: 0.4, ease: EASE }}
             />
             <span>{end}</span>
@@ -83,7 +83,7 @@ export function TimelineItem({ entry }) {
                   key={h.key}
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={REVEAL}
                   transition={{ duration: 0.45, delay: 0.15 + i * 0.07, ease: EASE }}
                   className={`group flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-2)] p-3.5 transition-[background-color,border-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-white ${colors.hoverBorder}`}
                 >

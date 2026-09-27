@@ -5,3 +5,10 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Vite's /assets files are content-hashed, so a changed file always gets a new
+# name — safe to cache for a year and skip revalidation on repeat visits.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -18,7 +18,7 @@ import {
 import { EventFlowDiagram } from "./EventFlowDiagram";
 import { TechBadge } from "./TechBadge";
 import { useLockBodyScroll } from "../hooks/useLockBodyScroll";
-import { EASE } from "../lib/motion";
+import { EASE, REVEAL } from "../lib/motion";
 
 const SECTIONS = [
   { key: "problem", icon: Target, color: "#ec4899" },
@@ -39,7 +39,7 @@ function CaseSection({ id, index, heading, icon: Icon, color, children }) {
       id={id}
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
+      viewport={REVEAL}
       transition={{ duration: 0.5, ease: EASE }}
       className="scroll-mt-4 border-t border-[var(--color-border-soft)] py-9 first:border-t-0 first:pt-6"
     >
@@ -196,7 +196,7 @@ export function ProjectModal({ project, open, onClose }) {
                 <motion.ol
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, amount: 0.5 }}
+                  viewport={REVEAL}
                   variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
                   className="flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--color-border-soft)] bg-[var(--color-surface-2)] p-4"
                 >

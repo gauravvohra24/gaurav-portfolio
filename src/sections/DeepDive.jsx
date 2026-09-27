@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Activity, Bot, KeyRound, MessageSquareText, Route, User, Boxes, Globe, ShieldCheck } from "lucide-react";
 import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
-import { EASE } from "../lib/motion";
+import { EASE, REVEAL } from "../lib/motion";
 import { DEEP_DIVE_STORIES } from "../data/project";
 
 const ACCENTS = {
@@ -115,7 +115,7 @@ export function DeepDive() {
                 onClick={() => setActive(story.key)}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
+                viewport={REVEAL}
                 transition={{ duration: 0.55, delay: i * 0.08, ease: EASE }}
                 style={{ flexGrow: isActive ? 1.5 : 1 }}
                 className={`dd-card group relative flex min-w-0 basis-0 flex-col gap-4 overflow-hidden cursor-default rounded-2xl border bg-white p-6 text-left transition-[flex-grow,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${

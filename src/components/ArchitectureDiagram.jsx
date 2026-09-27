@@ -5,6 +5,7 @@ import { SYSTEM_NODES, SYSTEM_EDGES, TRACE_PATH } from "../data/architecture";
 import { CATEGORY_COLORS } from "../data/categoryColors";
 import { useSequence } from "../hooks/useSequence";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import { PACKET, SPRING } from "../lib/motion";
 
 const ICONS = {
@@ -23,18 +24,46 @@ const ICONS = {
 
 const CATEGORY_LABELS = { security: "Security", edge: "Gateway", service: "Service", messaging: "Messaging", data: "Database", ai: "AI", platform: "Platform" };
 
-const CANVAS = { width: 800, height: 500 };
-const BANDS = [
-  { y: 84, h: 92, label: "EDGE · SECURITY · CONFIG" },
-  { y: 226, h: 92, label: "SERVICES" },
-  { y: 378, h: 92, label: "DATA · MESSAGING · AI · DISCOVERY" },
-];
-const MOBILE_GROUPS = [
-  { label: "Client", test: (n) => n.y < 80 },
-  { label: "Edge · Security · Config", test: (n) => n.y > 80 && n.y < 200 },
-  { label: "Services", test: (n) => n.y > 200 && n.y < 350 },
-  { label: "Data · Messaging · AI · Discovery", test: (n) => n.y > 350 },
-];
+// Two layouts over the same diagram engine. Desktop uses the coordinates in
+// data/architecture.js; phones get their own portrait layout (not a scaled-down
+// desktop) with node widths expressed as a share of the canvas, so nodes can
+// never overlap at any phone width.
+const DESKTOP = {
+  width: 800,
+  height: 500,
+  bands: [
+    { y: 84, h: 92, label: "EDGE · SECURITY · CONFIG" },
+    { y: 226, h: 92, label: "SERVICES" },
+    { y: 378, h: 92, label: "DATA · MESSAGING · AI · DISCOVERY" },
+  ],
+  pos: Object.fromEntries(SYSTEM_NODES.map((n) => [n.id, { x: n.x, y: n.y }])),
+};
+const MOBILE = {
+  width: 360,
+  height: 430,
+  bands: [
+    { y: 70, h: 80, label: "EDGE · SECURITY · CONFIG" },
+    { y: 186, h: 80, label: "SERVICES" },
+    { y: 304, h: 90, label: "DATA · MESSAGING · AI" },
+  ],
+  pos: {
+    client: { x: 180, y: 28 },
+    keycloak: { x: 62, y: 110 },
+    gateway: { x: 180, y: 110 },
+    "config-server": { x: 298, y: 110 },
+    "user-service": { x: 62, y: 226 },
+    "activity-service": { x: 180, y: 226 },
+    "ai-service": { x: 298, y: 226 },
+    eureka: { x: 46, y: 349 },
+    postgresql: { x: 136, y: 349 },
+    rabbitmq: { x: 224, y: 349 },
+    gemini: { x: 314, y: 349 },
+  },
+  // node width in canvas units, by row
+  nodeWidth: (y) => (y > 300 ? 82 : 104),
+  // shorter labels where a narrow node would otherwise break a word mid-way
+  shortLabel: { postgresql: "Postgres" },
+};
 
 const edgeKey = (a, b) => `${a}->${b}`;
 const pct = (v, total) => `${(v / total) * 100}%`;
@@ -160,6 +189,9 @@ function InspectPanel({ node, neighbours, onClose }) {
 
 export function ArchitectureDiagram() {
   const reduced = usePrefersReducedMotion();
+  const isPhone = useMediaQuery("(max-width: 639px)");
+  const L = isPhone ? MOBILE : DESKTOP;
+  const P = (id) => L.pos[id];
   const [view, setView] = useState("system");
   const [pinned, setPinned] = useState(null);
   const [hover, setHover] = useState(null);
@@ -219,17 +251,17 @@ export function ArchitectureDiagram() {
       </div>
 
       {/* Tablet / desktop canvas */}
-      <div className="relative hidden w-full select-none sm:block" style={{ aspectRatio: `${CANVAS.width} / ${CANVAS.height}` }} onMouseLeave={() => setHover(null)}>
-        <svg viewBox={`0 0 ${CANVAS.width} ${CANVAS.height}`} className="absolute inset-0 h-full w-full" aria-hidden="true" onClick={() => setPinned(null)}>
+      <div className="relative w-full select-none" style={{ aspectRatio: `${L.width} / ${L.height}` }} onMouseLeave={() => setHover(null)}>
+        <svg viewBox={`0 0 ${L.width} ${L.height}`} className="absolute inset-0 h-full w-full" aria-hidden="true" onClick={() => setPinned(null)}>
           <defs>
             <pattern id="arch-dots" width="16" height="16" patternUnits="userSpaceOnUse">
               <circle cx="1" cy="1" r="0.9" fill="#e2e8f0" />
             </pattern>
           </defs>
-          <rect width={CANVAS.width} height={CANVAS.height} fill="url(#arch-dots)" />
-          {BANDS.map((band) => (
+          <rect width={L.width} height={L.height} fill="url(#arch-dots)" />
+          {L.bands.map((band) => (
             <g key={band.label}>
-              <rect x="4" y={band.y} width={CANVAS.width - 8} height={band.h} rx="14" fill="#f8fafc" opacity="0.85" stroke="#eef1f6" />
+              <rect x="4" y={band.y} width={L.width - 8} height={band.h} rx={isPhone ? 10 : 14} fill="#f8fafc" opacity="0.85" stroke="#eef1f6" />
               <text x="16" y={band.y + 14} className="hidden lg:block" fontSize="8" letterSpacing="1.4" fontFamily="JetBrains Mono, monospace" fill="#94a3b8">
                 {band.label}
               </text>
@@ -237,11 +269,11 @@ export function ArchitectureDiagram() {
           ))}
 
           {SYSTEM_EDGES.map((edge) => {
-            const a = nodesById[edge.from];
-            const b = nodesById[edge.to];
+            const a = P(edge.from);
+            const b = P(edge.to);
             const key = edgeKey(edge.from, edge.to);
             const d = edgePath(a, b);
-            const color = CATEGORY_COLORS[a.category]?.dot ?? "#6366f1";
+            const color = CATEGORY_COLORS[nodesById[edge.from].category]?.dot ?? "#6366f1";
             const isDiscovery = edge.kind === "discovery" || edge.kind === "config";
             let stroke = "#d5dae4";
             let width = 1.3;
@@ -285,7 +317,7 @@ export function ArchitectureDiagram() {
           {hop && !reduced && (
             <Packet
               key={`trace-${step}`}
-              d={edgePath(nodesById[hop.reverse ? hop.to : hop.from], nodesById[hop.reverse ? hop.from : hop.to])}
+              d={edgePath(P(hop.reverse ? hop.to : hop.from), P(hop.reverse ? hop.from : hop.to))}
               color={PACKET[hop.kind].color}
               dur={1}
               reverse={hop.reverse}
@@ -302,7 +334,8 @@ export function ArchitectureDiagram() {
           const isDim = focus === "dim";
           const isPinned = pinned === node.id;
           const isClient = node.id === "client";
-          const tooltipBelow = node.y < 180;
+          const at = P(node.id);
+          const tooltipBelow = at.y < 180;
           const arriving = hop && hop.to === node.id;
           return (
             <motion.button
@@ -317,9 +350,9 @@ export function ArchitectureDiagram() {
               aria-label={`${node.label} — ${node.role}. ${node.why}`}
               animate={{ opacity: isDim ? 0.28 : 1, scale: isSelected ? 1.07 : isLit ? 1.02 : 1 }}
               transition={{ opacity: { duration: 0.3 }, scale: SPRING.micro }}
-              style={{ left: pct(node.x, CANVAS.width), top: pct(node.y, CANVAS.height), zIndex: isSelected ? 20 : 2, x: "-50%", y: "-50%" }}
+              style={{ left: pct(at.x, L.width), top: pct(at.y, L.height), width: isPhone && !isClient ? pct(MOBILE.nodeWidth(at.y), L.width) : undefined, zIndex: isSelected ? 20 : 2, x: "-50%", y: "-50%" }}
               className={`absolute flex items-center border bg-white text-center transition-[border-color,box-shadow] duration-300 ${
-                isClient ? "gap-1.5 rounded-full px-3 py-1.5" : "w-[96px] flex-col gap-1 rounded-xl px-2 py-2 md:w-[112px] lg:w-[124px] lg:py-2.5"
+                isClient ? "gap-1.5 rounded-full px-3 py-1.5" : isPhone ? "flex-col gap-0.5 rounded-lg px-1 py-1.5" : "w-[96px] flex-col gap-1 rounded-xl px-2 py-2 md:w-[112px] lg:w-[124px] lg:py-2.5"
               } ${isLit || arriving ? `${colors.border} shadow-lg ${colors.ring}` : "border-[var(--color-border)] shadow-[0_2px_8px_-4px_rgba(15,23,42,0.12)]"} ${isPinned ? "ring-2 ring-indigo-200 ring-offset-2" : ""}`}
             >
               {arriving && !reduced && (
@@ -332,10 +365,10 @@ export function ArchitectureDiagram() {
                   transition={{ delay: 0.85, duration: 0.6 }}
                 />
               )}
-              <span className={`flex items-center justify-center rounded-lg ${colors.bg} ${isClient ? "h-5 w-5" : "h-7 w-7"}`}>
+              <span className={`flex items-center justify-center rounded-lg ${colors.bg} ${isClient || isPhone ? "h-5 w-5" : "h-7 w-7"}`}>
                 <Icon className={`h-3.5 w-3.5 ${colors.text}`} aria-hidden="true" />
               </span>
-              <span className="whitespace-nowrap font-mono text-[10px] font-semibold leading-tight text-[var(--color-text)] lg:text-[11px]">{node.label}</span>
+              <span className={`font-mono font-semibold leading-tight text-[var(--color-text)] ${isPhone ? "text-[10px]" : "whitespace-nowrap text-[10px] lg:text-[11px]"}`}>{isPhone ? MOBILE.shortLabel[node.id] ?? node.label : node.label}</span>
               {!isClient && <span className={`hidden font-mono text-[8px] uppercase tracking-wider md:block ${colors.text}`}>{CATEGORY_LABELS[node.category]}</span>}
 
               <AnimatePresence>
@@ -359,37 +392,6 @@ export function ArchitectureDiagram() {
             </motion.button>
           );
         })}
-      </div>
-
-      {/* Mobile — grouped, tappable layers */}
-      <div className="flex flex-col gap-4 sm:hidden">
-        {MOBILE_GROUPS.map((group) => (
-          <div key={group.label}>
-            <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--color-text-faint)]">{group.label}</p>
-            <div className="grid grid-cols-2 gap-2">
-              {SYSTEM_NODES.filter(group.test).map((node) => {
-                const Icon = ICONS[node.id];
-                const colors = CATEGORY_COLORS[node.category];
-                const focus = nodeFocus(node.id);
-                const lit = focus === "lit" || focus === "selected";
-                return (
-                  <button
-                    key={node.id}
-                    type="button"
-                    onClick={() => selectNode(node.id)}
-                    aria-pressed={pinned === node.id}
-                    className={`flex items-center gap-2 rounded-xl border bg-white px-2.5 py-2.5 text-left transition-all duration-300 ${lit ? `${colors.border} shadow-md ${colors.ring}` : "border-[var(--color-border)]"} ${focus === "dim" ? "opacity-40" : ""}`}
-                  >
-                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${colors.bg}`}>
-                      <Icon className={`h-3.5 w-3.5 ${colors.text}`} aria-hidden="true" />
-                    </span>
-                    <span className="truncate font-mono text-[11px] font-semibold text-[var(--color-text)]">{node.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
       </div>
 
       {/* Inspection / trace panel */}

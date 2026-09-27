@@ -142,7 +142,7 @@ function SvgNode({ id, node, built, reduced, state, color }) {
 export function SystemTrace() {
   const reduced = usePrefersReducedMotion();
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.35 });
+  const inView = useInView(ref, { once: true, margin: "40000px 0px -25% 0px" });
   const [phase, setPhase] = useState("idle"); // idle | running | complete
   const [step, setStep] = useState(-1);
   const [runId, setRunId] = useState(0);

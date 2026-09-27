@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { EASE } from "../lib/motion";
+import { EASE, REVEAL } from "../lib/motion";
 import { chapter as getChapter } from "../data/site";
 
 const reveal = {
@@ -21,7 +21,7 @@ export function SectionHeading({ chapter, eyebrow, title, description, align = "
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={REVEAL}
       className={`flex max-w-2xl flex-col gap-3 ${alignClasses} ${className}`}
     >
       <motion.p custom={0} variants={reveal} className="flex flex-wrap items-center gap-x-3 gap-y-1">

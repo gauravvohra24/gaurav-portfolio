@@ -7,7 +7,7 @@ import { AmbientGlow } from "../components/AmbientGlow";
 import { Tilt } from "../components/Tilt";
 import { ChangeDiagram, RetryDiagram, LayersDiagram } from "../components/PrincipleDiagrams";
 import { useFinePointer } from "../hooks/useFinePointer";
-import { EASE, DURATION } from "../lib/motion";
+import { EASE, DURATION, REVEAL } from "../lib/motion";
 import { PERSONAL } from "../data/site";
 
 const PRINCIPLES = [
@@ -66,7 +66,7 @@ export function About() {
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
+            viewport={REVEAL}
             transition={{ duration: DURATION.section, delay: 0.15, ease: EASE }}
             className="flex flex-col gap-4"
           >
@@ -93,7 +93,7 @@ export function About() {
                 key={title}
                 initial={{ opacity: 0, y: 22 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
+                viewport={REVEAL}
                 transition={{ duration: DURATION.section, delay: i * 0.1, ease: EASE }}
               >
                 <Tilt

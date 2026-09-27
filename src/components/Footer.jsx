@@ -30,7 +30,7 @@ export function Footer() {
               href={href}
               target={label === "Email" ? undefined : "_blank"}
               rel={label === "Email" ? undefined : "noreferrer"}
-              className="group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
+              className="group inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text)]"
             >
               <Icon className="h-4 w-4 transition-colors group-hover:text-[var(--color-indigo-ink)]" />
               {label}
@@ -42,7 +42,7 @@ export function Footer() {
         <p className="font-mono text-xs text-[var(--color-text-faint)]">
           © {new Date().getFullYear()} {PERSONAL.name}
         </p>
-        <a href="#top" className="inline-flex items-center gap-1 font-mono text-xs text-[var(--color-text-faint)] transition-colors hover:text-[var(--color-text)]">
+        <a href="#top" className="inline-flex min-h-11 items-center gap-1 font-mono text-xs text-[var(--color-text-faint)] transition-colors hover:text-[var(--color-text)]">
           Back to top
           <ArrowUp className="h-3 w-3" aria-hidden="true" />
         </a>

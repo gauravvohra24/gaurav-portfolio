@@ -1,8 +1,11 @@
 import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
-import { ArchitectureDiagram } from "../components/ArchitectureDiagram";
+import { lazyNamed } from "../lib/lazy";
+import { Deferred } from "../components/Deferred";
 import { AmbientGlow } from "../components/AmbientGlow";
 import { CATEGORY_COLORS } from "../data/categoryColors";
+
+const ArchitectureDiagram = lazyNamed(() => import("../components/ArchitectureDiagram"), "ArchitectureDiagram");
 
 const LEGEND = [
   { label: "Security", key: "security" },
@@ -39,7 +42,9 @@ export function Architecture() {
         </div>
 
         <div className="card-glow rounded-[28px] border border-[var(--color-border)] bg-white p-4 sm:p-6 lg:p-8">
-          <ArchitectureDiagram />
+          <Deferred minHeight={480}>
+            <ArchitectureDiagram />
+          </Deferred>
         </div>
       </Container>
     </section>

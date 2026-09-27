@@ -28,7 +28,7 @@ export function FlowChain({ nodes, running = false, color = "#6366f1", layout = 
               {...(onSelect ? { type: "button", onClick: () => onSelect(i), "aria-pressed": selected === i, "data-cursor": "ring" } : {})}
               className={`relative block whitespace-nowrap rounded-lg border bg-white px-2.5 py-1.5 text-center font-mono font-semibold ${text} text-[var(--color-text)] transition-all duration-300 ${
                 lit ? "-translate-y-px shadow-md" : "border-[var(--color-border)] shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
-              } ${onSelect ? "cursor-pointer hover:border-[var(--color-text-faint)]" : ""}`}
+              } ${onSelect ? "min-h-10 cursor-pointer hover:border-[var(--color-text-faint)]" : ""}`}
               style={lit ? { borderColor: `${color}88`, boxShadow: `0 0 0 3px ${color}1f, 0 6px 16px -8px ${color}99` } : undefined}
             >
               {label}

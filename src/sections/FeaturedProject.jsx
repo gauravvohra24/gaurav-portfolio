@@ -3,14 +3,17 @@ import { motion } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight, Boxes, KeyRound, MessageSquareText, Network, Radar, Sparkles, UserCheck } from "lucide-react";
 import { Container } from "../components/Container";
 import { SectionHeading } from "../components/SectionHeading";
-import { SystemTrace } from "../components/SystemTrace";
 import { MagneticWrap } from "../components/MagneticWrap";
-import { ProjectModal } from "../components/ProjectModal";
+import { lazyNamed } from "../lib/lazy";
+import { Deferred } from "../components/Deferred";
 import { TechBadge } from "../components/TechBadge";
 import { AmbientGlow } from "../components/AmbientGlow";
 import { usePointerGlow } from "../hooks/usePointerGlow";
-import { EASE } from "../lib/motion";
+import { EASE, REVEAL } from "../lib/motion";
 import { FEATURED_PROJECT } from "../data/project";
+
+const SystemTrace = lazyNamed(() => import("../components/SystemTrace"), "SystemTrace");
+const ProjectModal = lazyNamed(() => import("../components/ProjectModal"), "ProjectModal");
 
 const HIGHLIGHT_ICONS = [Boxes, Sparkles, KeyRound, MessageSquareText, UserCheck, Radar];
 const HIGHLIGHT_COLORS = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#6366f1", "#06b6d4"];
@@ -35,7 +38,7 @@ export function FeaturedProject() {
           onMouseMove={onGlowMove}
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={REVEAL}
           transition={{ duration: 0.7, ease: EASE }}
           className="pointer-glow gradient-border card-glow overflow-hidden rounded-[32px] bg-white"
         >
@@ -83,7 +86,7 @@ export function FeaturedProject() {
                         key={capability}
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
+                        viewport={REVEAL}
                         transition={{ duration: 0.45, delay: 0.1 + i * 0.06, ease: EASE }}
                         className="flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-2)]/70 p-3 text-sm leading-snug text-[var(--color-text-muted)]"
                       >
@@ -130,17 +133,21 @@ export function FeaturedProject() {
 
             {/* Live architecture side */}
             <div className="relative border-t border-[var(--color-border-soft)] bg-[var(--color-surface-2)]/60 p-5 sm:p-8 lg:border-l lg:border-t-0">
-              <SystemTrace />
+              <Deferred minHeight={640}>
+                <SystemTrace />
+              </Deferred>
             </div>
           </div>
         </motion.article>
       </Container>
 
-      <ProjectModal
-        project={FEATURED_PROJECT}
-        open={open}
-        onClose={close}
-      />
+      <Deferred minHeight={0}>
+        <ProjectModal
+          project={FEATURED_PROJECT}
+          open={open}
+          onClose={close}
+        />
+      </Deferred>
     </section>
   );
 }
